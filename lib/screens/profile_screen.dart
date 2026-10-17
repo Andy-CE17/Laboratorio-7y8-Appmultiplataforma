@@ -35,12 +35,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: 116,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFDCE4E7), Color(0xFF52646D)],
-                    ),
                     border: Border.all(color: AppColors.orange, width: 3),
                   ),
-                  child: const Icon(Icons.person, size: 78),
+                  child: const ClipOval(
+                    child: Image(
+                      image: AssetImage('assets/images/profile_avatar.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
                 Positioned(
                   right: 0,

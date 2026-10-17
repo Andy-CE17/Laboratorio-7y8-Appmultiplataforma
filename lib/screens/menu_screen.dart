@@ -36,10 +36,13 @@ class MenuScreen extends StatelessWidget {
             ),
           ),
           PagePadding(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: ListView(
+              padding: EdgeInsets.zero,
               children: [
-                const Icon(Icons.menu_rounded, size: 34),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Icon(Icons.menu_rounded, size: 34),
+                ),
                 const SizedBox(height: 22),
                 Row(
                   children: [
@@ -48,12 +51,14 @@ class MenuScreen extends StatelessWidget {
                       height: 82,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFCFD8DC), Color(0xFF455A64)],
-                        ),
                         border: Border.all(color: Colors.white24, width: 2),
                       ),
-                      child: const Icon(Icons.person, size: 54),
+                      child: const ClipOval(
+                        child: Image(
+                          image: AssetImage('assets/images/profile_avatar.png'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 16),
                     const Expanded(
