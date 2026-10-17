@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 class Product {
@@ -8,6 +10,7 @@ class Product {
     required this.description,
     required this.icon,
     required this.accent,
+    this.imageBytes,
   });
 
   final String name;
@@ -16,4 +19,5 @@ class Product {
   final String description;
   final IconData icon;
   final Color accent;
+  final Uint8List? imageBytes;
 }

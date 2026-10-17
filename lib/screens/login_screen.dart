@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_theme.dart';
+import '../data/app_settings.dart';
 import '../widgets/ui_helpers.dart';
 import 'menu_screen.dart';
 
@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _login() {
     if (!_formKey.currentState!.validate()) return;
 
-    if (_emailController.text.trim() != 'admin@demo.com' ||
+    if (_emailController.text.trim() != AppSettings.instance.email ||
         _passwordController.text != '123456') {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -46,6 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final accent = Theme.of(context).colorScheme.primary;
     return Scaffold(
       backgroundColor: const Color(0xFFF7F7F6),
       body: Stack(
@@ -91,8 +92,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: 78,
                       height: 78,
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFFF7A18), AppColors.orangeDark],
+                        gradient: LinearGradient(
+                          colors: [
+                            Color.lerp(accent, Colors.white, .12)!,
+                            Color.lerp(accent, Colors.black, .18)!,
+                          ],
                         ),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: const [
@@ -119,10 +123,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 1,
                       ),
                     ),
-                    const Text(
+                    Text(
                       'Productos',
                       style: TextStyle(
-                        color: AppColors.orange,
+                        color: accent,
                         fontSize: 40,
                         fontWeight: FontWeight.w900,
                         height: 1.1,
@@ -204,8 +208,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(color: Color(0xFF7A7D81)),
                     ),
                     const SizedBox(height: 6),
-                    const Text(
-                      'admin@demo.com\n123456',
+                    Text(
+                      '${AppSettings.instance.email}\n123456',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Color(0xFF3E4145),
@@ -242,7 +246,10 @@ class _LoginScreenState extends State<LoginScreen> {
       border: border,
       enabledBorder: border,
       focusedBorder: border.copyWith(
-        borderSide: const BorderSide(color: AppColors.orange, width: 1.5),
+        borderSide: BorderSide(
+          color: Theme.of(context).colorScheme.primary,
+          width: 1.5,
+        ),
       ),
     );
   }

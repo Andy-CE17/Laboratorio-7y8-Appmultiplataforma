@@ -7,9 +7,11 @@ Aplicación Flutter desarrollada para los laboratorios 7 y 8 del curso de Aplica
 - Inicio de sesión con validación.
 - Menú principal conectado con todas las secciones.
 - ListView de productos con búsqueda y contador.
-- Registro de productos con validación de campos.
+- Registro de productos con validación y selección de imagen.
 - Almacenamiento temporal en memoria durante la ejecución.
-- Perfil y configuración del usuario.
+- Detalle y eliminación de productos desde el ListView.
+- Edición de nombre, correo y foto del usuario.
+- Selector de tema de color y control de notificaciones.
 - Cierre de sesión y retorno al Login.
 
 ## Usuario de prueba

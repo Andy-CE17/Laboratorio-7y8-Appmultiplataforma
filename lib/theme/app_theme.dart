@@ -11,14 +11,14 @@ class AppColors {
 }
 
 class AppTheme {
-  static ThemeData get theme {
+  static ThemeData theme(Color accent) {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.orange,
+        seedColor: accent,
         brightness: Brightness.dark,
-        primary: AppColors.orange,
+        primary: accent,
         surface: AppColors.surface,
       ),
       scaffoldBackgroundColor: AppColors.background,
@@ -41,7 +41,7 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.orange, width: 1.5),
+          borderSide: BorderSide(color: accent, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
@@ -50,7 +50,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.orange,
+          backgroundColor: accent,
           foregroundColor: Colors.white,
           minimumSize: const Size.fromHeight(54),
           shape: RoundedRectangleBorder(

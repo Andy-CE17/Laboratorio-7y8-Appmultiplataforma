@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../data/product_store.dart';
 import '../models/product.dart';
@@ -18,6 +21,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   final _priceController = TextEditingController();
   final _descriptionController = TextEditingController();
   String _category = 'Muebles';
+  Uint8List? _imageBytes;
 
   @override
   void dispose() {
@@ -40,6 +44,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         description: _descriptionController.text.trim(),
         icon: categoryStyle.$1,
         accent: categoryStyle.$2,
+        imageBytes: _imageBytes,
       ),
     );
     Navigator.pop(context, true);
@@ -47,11 +52,25 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
 
   (IconData, Color) _styleForCategory(String category) {
     return switch (category) {
-      'Muebles' => (Icons.chair_alt_outlined, AppColors.orange),
+      'Muebles' => (
+        Icons.chair_alt_outlined,
+        Theme.of(context).colorScheme.primary,
+      ),
       'Tecnología' => (Icons.devices_other_outlined, const Color(0xFFFFC229)),
       'Accesorios' => (Icons.headphones_outlined, const Color(0xFFB941F5)),
       _ => (Icons.inventory_2_outlined, const Color(0xFF21B58E)),
     };
+  }
+
+  Future<void> _pickImage() async {
+    final image = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 85,
+      maxWidth: 1200,
+    );
+    if (image == null) return;
+    final bytes = await image.readAsBytes();
+    if (mounted) setState(() => _imageBytes = bytes);
   }
 
   @override
@@ -69,7 +88,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           padding: const EdgeInsets.fromLTRB(22, 14, 22, 26),
           children: [
             Container(
-              height: 130,
+              height: 150,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: AppColors.surface,
@@ -79,36 +98,52 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
               child: Row(
                 children: [
                   Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppColors.muted),
-                      ),
-                      child: const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.photo_camera_outlined, size: 36),
-                          SizedBox(height: 8),
-                          Text(
-                            'Agregar imagen\n(opcional)',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: AppColors.muted),
-                          ),
-                        ],
+                    child: InkWell(
+                      onTap: _pickImage,
+                      borderRadius: BorderRadius.circular(14),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: AppColors.muted),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              _imageBytes == null
+                                  ? Icons.photo_camera_outlined
+                                  : Icons.change_circle_outlined,
+                              size: 36,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              _imageBytes == null
+                                  ? 'Agregar imagen\n(opcional)'
+                                  : 'Cambiar imagen',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(color: AppColors.muted),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFFE8EAEC),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: const Icon(
-                        Icons.inventory_2_outlined,
-                        color: Color(0xFF555B60),
-                        size: 58,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE8EAEC),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: _imageBytes == null
+                            ? const Icon(
+                                Icons.inventory_2_outlined,
+                                color: Color(0xFF555B60),
+                                size: 58,
+                              )
+                            : Image.memory(_imageBytes!, fit: BoxFit.cover),
                       ),
                     ),
                   ),
@@ -212,10 +247,12 @@ class _Label extends StatelessWidget {
       TextSpan(
         text: text,
         children: required
-            ? const [
+            ? [
                 TextSpan(
                   text: ' *',
-                  style: TextStyle(color: AppColors.orange),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               ]
             : null,

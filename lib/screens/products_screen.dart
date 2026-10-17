@@ -41,6 +41,72 @@ class _ProductsScreenState extends State<ProductsScreen> {
     }
   }
 
+  void _showDetails(Product product) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(product.name),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (product.imageBytes != null)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.memory(
+                  product.imageBytes!,
+                  height: 150,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            if (product.imageBytes != null) const SizedBox(height: 16),
+            Text('Categoría: ${product.category}'),
+            const SizedBox(height: 8),
+            Text('Precio: S/ ${product.price.toStringAsFixed(2)}'),
+            const SizedBox(height: 8),
+            Text(
+              product.description.isEmpty
+                  ? 'Sin descripción'
+                  : product.description,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cerrar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _deleteProduct(Product product) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Eliminar producto'),
+        content: Text('¿Deseas eliminar "${product.name}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true && mounted) {
+      setState(() => ProductStore.instance.remove(product));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Producto eliminado')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final products = _filteredProducts;
@@ -81,7 +147,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     onPressed: _openForm,
                     style: FilledButton.styleFrom(
                       padding: EdgeInsets.zero,
-                      backgroundColor: AppColors.orange,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -112,8 +178,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       itemCount: products.length,
                       separatorBuilder: (context, index) =>
                           const SizedBox(height: 12),
-                      itemBuilder: (context, index) =>
-                          _ProductCard(product: products[index]),
+                      itemBuilder: (context, index) => _ProductCard(
+                        product: products[index],
+                        onView: () => _showDetails(products[index]),
+                        onDelete: () => _deleteProduct(products[index]),
+                      ),
                     ),
             ),
             const SizedBox(height: 12),
@@ -131,9 +200,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
 }
 
 class _ProductCard extends StatelessWidget {
-  const _ProductCard({required this.product});
+  const _ProductCard({
+    required this.product,
+    required this.onView,
+    required this.onDelete,
+  });
 
   final Product product;
+  final VoidCallback onView;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -164,11 +239,19 @@ class _ProductCard extends StatelessWidget {
                   color: const Color(0xFFE9EBED),
                   borderRadius: BorderRadius.circular(11),
                 ),
-                child: Icon(
-                  product.icon,
-                  size: 43,
-                  color: const Color(0xFF30353A),
-                ),
+                child: product.imageBytes == null
+                    ? Icon(
+                        product.icon,
+                        size: 43,
+                        color: const Color(0xFF30353A),
+                      )
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(11),
+                        child: Image.memory(
+                          product.imageBytes!,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
               ),
             ),
             Expanded(
@@ -188,8 +271,8 @@ class _ProductCard extends StatelessWidget {
                   const SizedBox(height: 7),
                   Text(
                     'S/ ${product.price.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      color: AppColors.orange,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
                       fontSize: 17,
                       fontWeight: FontWeight.w900,
                     ),
@@ -197,7 +280,17 @@ class _ProductCard extends StatelessWidget {
                 ],
               ),
             ),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert),
+              onSelected: (value) {
+                if (value == 'view') onView();
+                if (value == 'delete') onDelete();
+              },
+              itemBuilder: (context) => const [
+                PopupMenuItem(value: 'view', child: Text('Ver detalles')),
+                PopupMenuItem(value: 'delete', child: Text('Eliminar')),
+              ],
+            ),
           ],
         ),
       ),

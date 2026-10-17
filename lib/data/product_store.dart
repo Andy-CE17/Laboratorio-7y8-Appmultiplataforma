@@ -55,4 +55,8 @@ class ProductStore {
   void add(Product product) {
     _products.add(product);
   }
+
+  void remove(Product product) {
+    _products.remove(product);
+  }
 }

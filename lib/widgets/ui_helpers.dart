@@ -32,15 +32,19 @@ class OrangeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accent = Theme.of(context).colorScheme.primary;
     return DecoratedBox(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFFF7417), AppColors.orangeDark],
+        gradient: LinearGradient(
+          colors: [
+            Color.lerp(accent, Colors.white, .12)!,
+            Color.lerp(accent, Colors.black, .18)!,
+          ],
         ),
         borderRadius: BorderRadius.circular(14),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Color(0x44FF5A0A),
+            color: accent.withValues(alpha: .28),
             blurRadius: 18,
             offset: Offset(0, 8),
           ),
