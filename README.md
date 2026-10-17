@@ -1,17 +1,47 @@
-# laboratorio_productos
+# Sistema de Productos
 
-A new Flutter project.
+Aplicación Flutter desarrollada para los laboratorios 7 y 8 del curso de Aplicaciones Móviles Multiplataforma.
 
-## Getting Started
+## Funciones
 
-This project is a starting point for a Flutter application.
+- Inicio de sesión con validación.
+- Menú principal conectado con todas las secciones.
+- ListView de productos con búsqueda y contador.
+- Registro de productos con validación de campos.
+- Almacenamiento temporal en memoria durante la ejecución.
+- Perfil y configuración del usuario.
+- Cierre de sesión y retorno al Login.
 
-A few resources to get you started if this is your first Flutter project:
+## Usuario de prueba
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+```text
+Correo: admin@demo.com
+Contraseña: 123456
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Estructura principal
+
+```text
+lib/
+├── data/
+├── models/
+├── screens/
+├── theme/
+├── widgets/
+└── main.dart
+```
+
+## Ejecución
+
+```bash
+flutter pub get
+flutter run -d chrome
+```
+
+## Validación
+
+```bash
+flutter analyze
+flutter test
+flutter build web
+```
